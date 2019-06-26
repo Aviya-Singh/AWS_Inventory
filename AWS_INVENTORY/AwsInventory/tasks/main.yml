@@ -1,0 +1,29 @@
+---
+# tasks file for aws_inventory
+
+- name: Gather facts from the AWS Console
+  ec2_remote_facts:
+    region: "{{ Region }}"
+    aws_access_key: "{{ aws_access_key }}"
+    aws_secret_key: "{{ aws_secret_key }}"
+  register: result
+
+- name: Delete file
+  file:
+    dest: "/tmp/CSV"
+    state: absent
+  delegate_to: localhost
+
+- name: Create a file
+  file:
+    dest: "/tmp/CSV"
+    state: touch
+  delegate_to: localhost
+
+- shell: echo 'INSTANCE_ID, REGION, KEYNAME , ROOT_DEVICE_TYPE , VOLUME_ID , SECURITY_GROUP , INTERFACE_ID , PRIVATE_DNS_NAME , PRIVATE_IP_ADDRESS , PUBLIC_DNS_NAME , PUBLIC_IP_ADDRESS, STATE , VPC_ID , NAME , HOSTNAME , OS_TYPE , SERVICE_TYPE , BAU_STATUS , APPLICATION_OWNER , PURPOSE , ENVIRONMENT_OWNER , BACKUP' >> /tmp/CSV
+  delegate_to: localhost
+
+- include: fetch.yml
+  with_items: "{{ result.instances }}"
+  loop_control:
+    loop_var: item_a

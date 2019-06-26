@@ -1,0 +1,87 @@
+- block:
+  - set_fact:
+      private_dns_name: "{{ item_a.private_dns_name }}"
+  rescue: 
+  - set_fact:
+      private_dns_name: ""
+
+- block:
+  - set_fact:
+      public_ip: "{{ item_a.public_ip_address }}"
+  rescue: 
+  - set_fact:
+      public_ip: ""
+
+
+- block:
+  - set_fact:
+      public_dns_name: "{{ item_a.public_dns_name }}"
+  rescue: 
+  - set_fact:
+      public_dns_name: ""
+
+- block:
+  - set_fact:
+      tags_name: "{{ item_a.tags.Name }}"
+  rescue: 
+  - set_fact:
+      tags_name: ""
+
+- block:
+  - set_fact:
+      tags_hostname: "{{ item_a.tags.Hostname }}"
+  rescue:
+  - set_fact:
+      tags_hostname: ""
+
+- block:
+  - set_fact:
+      tags_os: "{{ item_a.tags.['OS_Type'] }}"
+  rescue:
+  - set_fact:
+      tags_os: ""
+
+- block:
+  - set_fact:
+      tags_service: "{{ item_a.tags.['Service_Type'] }}"
+  rescue:
+  - set_fact:
+      tags_service: ""
+
+- block:
+  - set_fact:
+      tags_bau_status: "{{ item_a.tags['BAU-Status'] }}"
+  rescue:
+  - set_fact:
+      tags_bau_status: ""
+
+- block:
+  - set_fact:
+      tags_app_owner: "{{ item_a.tags.Application_Owner }}"
+  rescue:
+  - set_fact:
+      tags_app_owner: ""
+
+- block:
+  - set_fact:
+      tags_purpose: "{{ item_a.tags.Purpose }}"
+  rescue:
+  - set_fact:
+      tags_purpose: ""
+
+- block:
+  - set_fact:
+      tags_env: "{{ item_a.tags.Environment_Type }}"
+  rescue:
+  - set_fact:
+      tags_env: ""
+
+- block:
+  - set_fact:
+      tags_backup: "{{ item_a.tags.Backup }}"
+  rescue:
+  - set_fact:
+      tags_backup: ""
+
+- shell: echo "{{ item_a.id }},REGION,{{ item_a.key_name }},ebs,{{ item_a.block_device_mapping|json_query('[*].volume_id')|join(';') }},{{ item_a.groups|json_query('[*].id')|join(';') }},{{ item_a.interfaces|json_query('[*].id')|join(';') }},{{ private_dns_name }},{{ item_a.private_ip_address }},{{ public_dns_name }},{{ public_ip }},{{ item_a.state }},{{ item_a.vpc_id }},{{ tags_name }},{{ tags_hostname }},{{ tags_os }},{{ tags_service }},{{ tags_bau_status }},{{ tags_app_owner }},{{ tags_purpose }},{{ tags_env }},{{ tags_backup }}" >> /tmp/CSV
+  delegate_to: localhost

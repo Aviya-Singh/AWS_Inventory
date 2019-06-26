@@ -1,0 +1,6 @@
+---
+- name: Fetch AWS Inventory
+  hosts: localhost
+  connection: local
+  roles:
+    - AwsInventory
